@@ -1,0 +1,14 @@
+import jugador.*
+import controles.*
+import wollok.game.*
+
+program PepitaGame {
+	game.title("Acelerometro")
+	game.height(10)
+	game.width(10)
+
+	celular.simularTeclas()
+	game.addVisualCharacter(jugador)
+
+	game.start()
+}

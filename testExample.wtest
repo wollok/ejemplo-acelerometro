@@ -1,0 +1,10 @@
+import controles.*
+describe "Sensor" {
+
+  test "comienza en 0" {
+    assert.equals(0, sensor.x())
+    assert.equals(0, sensor.y())
+    assert.equals(0, sensor.z())
+  }
+
+}

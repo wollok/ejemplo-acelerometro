@@ -1,0 +1,27 @@
+<button id="start">Conectar</button>
+
+<script>
+
+  const WS = "ws://192.168.0.4:8080"; // IP de tu laptop
+
+  document.getElementById("start").onclick = async () => {
+    if (DeviceMotionEvent.requestPermission) {
+      await DeviceMotionEvent.requestPermission();
+    }
+    
+    const socket = new WebSocket(WS);
+    
+    window.addEventListener("devicemotion", (e) => {
+      document.getElementById("start").innerText = JSON.stringify({
+        x: e.accelerationIncludingGravity.x,
+        y: e.accelerationIncludingGravity.y,
+        z: e.accelerationIncludingGravity.z,
+      })
+      socket.send(JSON.stringify({
+        x: e.accelerationIncludingGravity.x,
+        y: e.accelerationIncludingGravity.y,
+        z: e.accelerationIncludingGravity.z,
+      }));
+    });
+  };
+</script>
