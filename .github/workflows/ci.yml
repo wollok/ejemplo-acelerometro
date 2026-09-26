@@ -14,6 +14,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Install wollok-ts-cli globally
         run: npm install -g wollok-ts-cli
 
