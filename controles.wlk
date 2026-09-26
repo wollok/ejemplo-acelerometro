@@ -1,8 +1,8 @@
 object sensor {
-  method x() native
+  method listen() native  
   
+  method x() native  
   method y() native
-  
   method z() native
 }
 
@@ -10,6 +10,7 @@ object celular {
   const sensibilidad = 2
   
   method simularTeclas() {
+    sensor.listen()
     game.tick(100, { self.registraMovimiento() }, true).start()
   }
   
