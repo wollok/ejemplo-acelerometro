@@ -8,7 +8,11 @@ En esta primera prueba queremos controlar al jugador con el _acelerómetro_.
 
 ⚠️ Necesitás tener la compu y el celu en la misma red wifi 🛜 preferentemente al _hotspot_.
 
-1. Clonate y levantá este juego Wollok desde el VSCode (como lo harías normalmente). 
+1. Clonate este repo y desde una consola dentro de la carpeta ejecutá
+  - `npm install`
+
+
+2. Levantá este juego Wollok desde el VSCode (como lo harías normalmente). 
 Fijate que el en la terminar te diga:
 `Ya podés conectar tu celular a ws://localhost:8080`
 Asegurate de que el juego se vea en la pantalla.
