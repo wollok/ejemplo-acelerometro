@@ -7,7 +7,7 @@ const sensor = {
   *listen(_self) {
     const wss = new WebSocketServer({ port })
     wss.on("connection", (ws) => {
-      console.log("📱 Celular conectado")
+      console.log("✓ Celular conectado")
 
       ws.on("message", (msg) => {
         const data = JSON.parse(msg.toString())
@@ -18,7 +18,7 @@ const sensor = {
       })
     })
 
-    console.log("Ya podés conectar tu celular a ws://localhost:8080")
+    console.log("📱 Ya podés conectar tu celular a ws://localhost:8080")
   },
 
 
