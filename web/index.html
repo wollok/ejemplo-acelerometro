@@ -1,0 +1,65 @@
+<label> IP de la laptop: <input id="ip" type="text" value="192.168.43.170" /> </label>
+<button id="start">Conectar</button>
+<label id="data"></label>
+
+<script>
+  const ipInput = document.getElementById("ip");
+  const dataLabel = document.getElementById("data");
+  const startButton = document.getElementById("start");
+
+  function showMessage(message, isError = false) {
+    dataLabel.innerText = message;
+    dataLabel.style.color = isError ? "red" : "inherit";
+  }
+
+  startButton.onclick = async () => {
+    const ip = ipInput.value.trim();
+    const WS = `ws://${ip}:8080`;
+
+    startButton.disabled = true;
+    showMessage("Conectando...");
+
+    try {
+      if (DeviceMotionEvent && DeviceMotionEvent.requestPermission) {
+        const permission = await DeviceMotionEvent.requestPermission();
+        if (permission !== "granted") {
+          throw new Error("Se denegó el permiso para usar el sensor de movimiento.");
+        }
+      }
+
+      const socket = new WebSocket(WS);
+
+      socket.addEventListener("open", () => {
+        showMessage("Conectado correctamente");
+
+        window.addEventListener("devicemotion", (e) => {
+          const payload = {
+            x: e.accelerationIncludingGravity.x,
+            y: e.accelerationIncludingGravity.y,
+            z: e.accelerationIncludingGravity.z,
+          };
+
+          dataLabel.innerText = JSON.stringify(payload);
+          socket.send(JSON.stringify(payload));
+
+        }, { passive: true });
+      });
+
+      socket.addEventListener("error", () => {
+        showMessage(`Error al conectar con ${WS}. Revisá la IP o que el servidor esté levantado.`, true);
+        startButton.disabled = false;
+      });
+
+      socket.addEventListener("close", (event) => {
+        const reason = event.reason ? ` Motivo: ${event.reason}` : "";
+        showMessage(`Conexión cerrada${reason}.`, true);
+        startButton.disabled = false;
+      });
+
+
+    } catch (error) {
+      showMessage(`Error: ${error.message || error}`, true);
+      startButton.disabled = false;
+    }
+  };
+</script>
