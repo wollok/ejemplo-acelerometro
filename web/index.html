@@ -24,7 +24,9 @@
   const startButton = document.getElementById("start");
   const needle = document.getElementById("needle");
 
+  const COMPASS_THRESHOLD = 0.5;
   let motionListener = null;
+  let lastCompassAngle = 0;
 
   function showStatus(message, isError = false) {
     statusElement.innerText = message;
@@ -32,7 +34,21 @@
   }
 
   function updateCompass(x, y) {
-    const angle = (Math.atan2(y, x) * 180) / Math.PI + 90;
+    const magnitude = Math.hypot(x, y);
+    if (magnitude < COMPASS_THRESHOLD) {
+      return;
+    }
+
+    const rawAngle = (Math.atan2(y, x) * 180) / Math.PI + 90;
+    const angle = ((rawAngle % 360) + 360) % 360;
+    const delta = Math.abs(angle - ((lastCompassAngle % 360) + 360) % 360);
+    const normalizedDelta = delta > 180 ? 360 - delta : delta;
+
+    if (normalizedDelta < 2) {
+      return;
+    }
+
+    lastCompassAngle = angle;
     needle.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
   }
 
