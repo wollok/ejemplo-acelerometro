@@ -1,33 +1,44 @@
 body {
+  box-sizing: border-box;
   font-family: Arial, sans-serif;
-  margin: 24px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 24px 16px;
   background: #111827;
   color: white;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
 .panel {
-  max-width: 420px;
+  width: min(100%, 420px);
   margin: 0 auto;
   text-align: center;
 }
 
 .controls {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: 12px;
-  justify-content: center;
   margin-bottom: 20px;
-  flex-wrap: wrap;
 }
 
 input {
+  width: 100%;
+  min-width: 0;
   padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid #374151;
-  min-width: 180px;
+  font: inherit;
 }
 
 button {
+  min-height: 44px;
   padding: 9px 16px;
   border: none;
   border-radius: 8px;
@@ -46,11 +57,12 @@ button:disabled {
   min-height: 24px;
   margin-bottom: 18px;
   font-size: 14px;
+  overflow-wrap: anywhere;
 }
 
 .compass {
-  width: 260px;
-  height: 260px;
+  width: min(260px, 100%);
+  aspect-ratio: 1;
   margin: 0 auto;
   border-radius: 50%;
   background: radial-gradient(circle at center, #1f2937 0%, #0f172a 60%, #020817 100%);
@@ -70,7 +82,7 @@ button:disabled {
 .compass .needle {
   position: absolute;
   width: 8px;
-  height: 118px;
+  height: 45%;
   left: 50%;
   top: 50%;
   transform-origin: center 90%;

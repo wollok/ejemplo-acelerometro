@@ -1,117 +1,130 @@
-<link rel="stylesheet" href="./style.css" />
+<!doctype html>
+<html lang="es">
 
-<div class="panel">
-  <div class="controls">
-    <label> IP de la laptop: <input id="ip" type="text" value="192.168.43.170" /> </label>
-    <button id="start">Conectar</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sensor de movimiento</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <div class="panel">
+    <div class="controls">
+      <label for="ip">IP de la laptop</label>
+      <input id="ip" type="text" value="192.168.43.170" />
+      <button id="start">Conectar</button>
+    </div>
+
+    <div id="status">Sin conexión</div>
+
+    <div class="compass" aria-label="Brújula visual">
+      <div class="direction n">N</div>
+      <div class="direction s">S</div>
+      <div class="direction e">E</div>
+      <div class="direction w">W</div>
+      <div id="needle" class="needle"></div>
+      <div class="center"></div>
+    </div>
   </div>
 
-  <div id="status">Sin conexión</div>
+  <script>
+    const ipInput = document.getElementById("ip");
+    const statusElement = document.getElementById("status");
+    const startButton = document.getElementById("start");
+    const needle = document.getElementById("needle");
 
-  <div class="compass" aria-label="Brújula visual">
-    <div class="direction n">N</div>
-    <div class="direction s">S</div>
-    <div class="direction e">E</div>
-    <div class="direction w">W</div>
-    <div id="needle" class="needle"></div>
-    <div class="center"></div>
-  </div>
-</div>
+    const COMPASS_THRESHOLD = 0.5;
+    let motionListener = null;
+    let lastCompassAngle = 0;
 
-<script>
-  const ipInput = document.getElementById("ip");
-  const statusElement = document.getElementById("status");
-  const startButton = document.getElementById("start");
-  const needle = document.getElementById("needle");
-
-  const COMPASS_THRESHOLD = 0.5;
-  let motionListener = null;
-  let lastCompassAngle = 0;
-
-  function showStatus(message, isError = false) {
-    statusElement.innerText = message;
-    statusElement.style.color = isError ? "#fca5a5" : "#e2e8f0";
-  }
-
-  function updateCompass(x, y) {
-    const magnitude = Math.hypot(x, y);
-    if (magnitude < COMPASS_THRESHOLD) {
-      return;
+    function showStatus(message, isError = false) {
+      statusElement.innerText = message;
+      statusElement.style.color = isError ? "#fca5a5" : "#e2e8f0";
     }
 
-    const rawAngle = (Math.atan2(y, x) * 180) / Math.PI + 90;
-    const angle = ((rawAngle % 360) + 360) % 360;
-    const delta = Math.abs(angle - ((lastCompassAngle % 360) + 360) % 360);
-    const normalizedDelta = delta > 180 ? 360 - delta : delta;
-
-    if (normalizedDelta < 2) {
-      return;
-    }
-
-    lastCompassAngle = angle;
-    needle.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
-  }
-
-  function detachMotionListener() {
-    if (motionListener) {
-      window.removeEventListener("devicemotion", motionListener);
-      motionListener = null;
-    }
-  }
-
-  startButton.onclick = async () => {
-    const ip = ipInput.value.trim();
-    const WS = `ws://${ip}:8080`;
-
-    startButton.disabled = true;
-    showStatus("Conectando...");
-
-    try {
-      if (DeviceMotionEvent && DeviceMotionEvent.requestPermission) {
-        const permission = await DeviceMotionEvent.requestPermission();
-        if (permission !== "granted") {
-          throw new Error("Se denegó el permiso para usar el sensor de movimiento.");
-        }
+    function updateCompass(x, y) {
+      const magnitude = Math.hypot(x, y);
+      if (magnitude < COMPASS_THRESHOLD) {
+        return;
       }
 
-      const socket = new WebSocket(WS);
+      const rawAngle = (Math.atan2(y, x) * 180) / Math.PI + 90;
+      const angle = ((rawAngle % 360) + 360) % 360;
+      const delta = Math.abs(angle - ((lastCompassAngle % 360) + 360) % 360);
+      const normalizedDelta = delta > 180 ? 360 - delta : delta;
 
-      socket.addEventListener("open", () => {
-        showStatus("Conectado correctamente");
+      if (normalizedDelta < 2) {
+        return;
+      }
 
-        detachMotionListener();
-        motionListener = (e) => {
-          const acceleration = e.accelerationIncludingGravity || {};
-          const x = Number(acceleration.x) || 0;
-          const y = Number(acceleration.y) || 0;
-          const z = Number(acceleration.z) || 0;
-
-          updateCompass(x, y);
-
-          if (socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify({ x, y, z }));
-          }
-        };
-
-        window.addEventListener("devicemotion", motionListener, { passive: true });
-      });
-
-      socket.addEventListener("error", () => {
-        showStatus(`Error al conectar con ${WS}. Revisá la IP o que el servidor esté levantado.`, true);
-        detachMotionListener();
-        startButton.disabled = false;
-      });
-
-      socket.addEventListener("close", (event) => {
-        const reason = event.reason ? ` Motivo: ${event.reason}` : "";
-        showStatus(`Conexión cerrada${reason}.`, true);
-        detachMotionListener();
-        startButton.disabled = false;
-      });
-    } catch (error) {
-      showStatus(`Error: ${error.message || error}`, true);
-      detachMotionListener();
-      startButton.disabled = false;
+      lastCompassAngle = angle;
+      needle.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
     }
-  };
-</script>
+
+    function detachMotionListener() {
+      if (motionListener) {
+        window.removeEventListener("devicemotion", motionListener);
+        motionListener = null;
+      }
+    }
+
+    startButton.onclick = async () => {
+      const ip = ipInput.value.trim();
+      const WS = `ws://${ip}:8080`;
+
+      startButton.disabled = true;
+      showStatus("Conectando...");
+
+      try {
+        if (DeviceMotionEvent && DeviceMotionEvent.requestPermission) {
+          const permission = await DeviceMotionEvent.requestPermission();
+          if (permission !== "granted") {
+            throw new Error("Se denegó el permiso para usar el sensor de movimiento.");
+          }
+        }
+
+        const socket = new WebSocket(WS);
+
+        socket.addEventListener("open", () => {
+          showStatus("Conectado correctamente");
+
+          detachMotionListener();
+          motionListener = (e) => {
+            const acceleration = e.accelerationIncludingGravity || {};
+            const x = Number(acceleration.x) || 0;
+            const y = Number(acceleration.y) || 0;
+            const z = Number(acceleration.z) || 0;
+
+            updateCompass(x, y);
+
+            if (socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify({ x, y, z }));
+            }
+          };
+
+          window.addEventListener("devicemotion", motionListener, { passive: true });
+        });
+
+        socket.addEventListener("error", () => {
+          showStatus(`Error al conectar con ${WS}. Revisá la IP o que el servidor esté levantado.`, true);
+          detachMotionListener();
+          startButton.disabled = false;
+        });
+
+        socket.addEventListener("close", (event) => {
+          const reason = event.reason ? ` Motivo: ${event.reason}` : "";
+          showStatus(`Conexión cerrada${reason}.`, true);
+          detachMotionListener();
+          startButton.disabled = false;
+        });
+      } catch (error) {
+        showStatus(`Error: ${error.message || error}`, true);
+        detachMotionListener();
+        startButton.disabled = false;
+      }
+    };
+  </script>
+</body>
+
+</html>
