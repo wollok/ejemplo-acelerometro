@@ -1,15 +1,46 @@
-<label> IP de la laptop: <input id="ip" type="text" value="192.168.43.170" /> </label>
-<button id="start">Conectar</button>
-<label id="data"></label>
+<link rel="stylesheet" href="./style.css" />
+
+<div class="panel">
+  <div class="controls">
+    <label> IP de la laptop: <input id="ip" type="text" value="192.168.43.170" /> </label>
+    <button id="start">Conectar</button>
+  </div>
+
+  <div id="status">Sin conexión</div>
+
+  <div class="compass" aria-label="Brújula visual">
+    <div class="direction n">N</div>
+    <div class="direction s">S</div>
+    <div class="direction e">E</div>
+    <div class="direction w">W</div>
+    <div id="needle" class="needle"></div>
+    <div class="center"></div>
+  </div>
+</div>
 
 <script>
   const ipInput = document.getElementById("ip");
-  const dataLabel = document.getElementById("data");
+  const statusElement = document.getElementById("status");
   const startButton = document.getElementById("start");
+  const needle = document.getElementById("needle");
 
-  function showMessage(message, isError = false) {
-    dataLabel.innerText = message;
-    dataLabel.style.color = isError ? "red" : "inherit";
+  let motionListener = null;
+
+  function showStatus(message, isError = false) {
+    statusElement.innerText = message;
+    statusElement.style.color = isError ? "#fca5a5" : "#e2e8f0";
+  }
+
+  function updateCompass(x, y) {
+    const angle = (Math.atan2(y, x) * 180) / Math.PI + 90;
+    needle.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+  }
+
+  function detachMotionListener() {
+    if (motionListener) {
+      window.removeEventListener("devicemotion", motionListener);
+      motionListener = null;
+    }
   }
 
   startButton.onclick = async () => {
@@ -17,7 +48,7 @@
     const WS = `ws://${ip}:8080`;
 
     startButton.disabled = true;
-    showMessage("Conectando...");
+    showStatus("Conectando...");
 
     try {
       if (DeviceMotionEvent && DeviceMotionEvent.requestPermission) {
@@ -30,35 +61,40 @@
       const socket = new WebSocket(WS);
 
       socket.addEventListener("open", () => {
-        showMessage("Conectado correctamente");
+        showStatus("Conectado correctamente");
 
-        window.addEventListener("devicemotion", (e) => {
-          const payload = {
-            x: e.accelerationIncludingGravity.x,
-            y: e.accelerationIncludingGravity.y,
-            z: e.accelerationIncludingGravity.z,
-          };
+        detachMotionListener();
+        motionListener = (e) => {
+          const acceleration = e.accelerationIncludingGravity || {};
+          const x = Number(acceleration.x) || 0;
+          const y = Number(acceleration.y) || 0;
+          const z = Number(acceleration.z) || 0;
 
-          dataLabel.innerText = JSON.stringify(payload);
-          socket.send(JSON.stringify(payload));
+          updateCompass(x, y);
 
-        }, { passive: true });
+          if (socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ x, y, z }));
+          }
+        };
+
+        window.addEventListener("devicemotion", motionListener, { passive: true });
       });
 
       socket.addEventListener("error", () => {
-        showMessage(`Error al conectar con ${WS}. Revisá la IP o que el servidor esté levantado.`, true);
+        showStatus(`Error al conectar con ${WS}. Revisá la IP o que el servidor esté levantado.`, true);
+        detachMotionListener();
         startButton.disabled = false;
       });
 
       socket.addEventListener("close", (event) => {
         const reason = event.reason ? ` Motivo: ${event.reason}` : "";
-        showMessage(`Conexión cerrada${reason}.`, true);
+        showStatus(`Conexión cerrada${reason}.`, true);
+        detachMotionListener();
         startButton.disabled = false;
       });
-
-
     } catch (error) {
-      showMessage(`Error: ${error.message || error}`, true);
+      showStatus(`Error: ${error.message || error}`, true);
+      detachMotionListener();
       startButton.disabled = false;
     }
   };

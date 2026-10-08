@@ -6,6 +6,7 @@ let x = 0, y = 0, z = 0
 const sensor = {
   *listen(_self) {
     const wss = new WebSocketServer({ port })
+    
     wss.on("connection", (ws) => {
       console.log("✓ Celular conectado")
 
