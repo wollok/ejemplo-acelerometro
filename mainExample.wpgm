@@ -1,14 +1,22 @@
-import jugador.*
-import controles.*
 import wollok.game.*
+import jugador.*
+import mapa.*
+import niveles.*
+import controler.*
 
-program PepitaGame {
-	game.title("Acelerometro")
-	game.height(10)
-	game.width(10)
+program juego {
 
-	celular.simularTeclas()
-	game.addVisualCharacter(jugador)
+// celular.simularTeclas()
 
-	game.start()
+  game.clear()
+  game.title("El laberinto de la bolita")
+  game.width(mapa.ancho())
+  game.height(mapa.alto())
+
+  mapa.iniciar(niveles.get(0))
+  bolita.iniciar()
+  game.addVisual(bolita)
+  controles.activar()
+
+  game.start()
 }
