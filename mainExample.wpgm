@@ -14,7 +14,6 @@ program juego {
   game.height(mapa.alto())
 
   mapa.iniciar(niveles.get(0))
-  bolita.iniciar()
   game.addVisual(bolita)
   controles.activar()
 

@@ -2,16 +2,11 @@ import wollok.game.*
 import mapa.*
 
 object bolita {
-  // (1, 1) es la posición por defecto, pero se inicializa en (38, 1) al iniciar el juego.
-  var property position = game.at(1, 1)
+  var property position = game.at(38, 1)
   var property activa = true
 
   method image() = "bolita.png"
 
-  method iniciar() {
-    position = game.at(38, 1)
-    activa = true
-  }
 
   method moverA(nuevaPosicion) {
     if (activa && mapa.estaDentroDelMapa(nuevaPosicion) && not(mapa.hayParedEn(nuevaPosicion))) {
