@@ -11,13 +11,14 @@ const sensor = {
       console.log("✓ Celular conectado")
 
       ws.on("message", (msg) => {
-        const { acceleration } = JSON.parse(msg.toString())
+        const { acceleration, buttonPressed } = JSON.parse(msg.toString())
         if (acceleration) {
           x = acceleration.x
           y = acceleration.y
           z = acceleration.z
           // console.log(`Acceleration: x=${x} y=${y} z=${z}`)
         }
+        if (buttonPressed) console.log({ buttonPressed })
       })
     })
 
