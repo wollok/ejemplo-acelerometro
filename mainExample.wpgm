@@ -10,5 +10,8 @@ program PepitaGame {
 	celular.simularTeclas()
 	game.addVisualCharacter(jugador)
 
+	sensor.register('A', { game.say(jugador, "HOLA!") })
+	sensor.register('B', { game.say(jugador, "CHAU!") })
+
 	game.start()
 }

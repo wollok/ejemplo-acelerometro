@@ -1,9 +1,22 @@
 object sensor {
-  method listen() native  
-  
+  const events = new Dictionary()
+
+  method listen() native
   method x() native  
   method y() native
   method z() native
+  method flushEvents() native
+
+  method register(key, block) {
+    const actions = events.getOrElse(key, { [] })
+    actions.add(block)
+    events.put(key, actions)
+  }
+
+  method buttonPressed(key) {
+    const actions = events.getOrElse(key, { [] })
+    actions.forEach({ block => block.apply() })
+  }
 }
 
 object celular {
@@ -11,7 +24,10 @@ object celular {
   
   method simularTeclas() {
     sensor.listen()
-    game.tick(100, { self.registraMovimiento() }, true).start()
+    game.tick(100, { 
+      sensor.flushEvents() 
+      self.registraMovimiento() 
+    }, true).start()
   }
   
   method registraMovimiento() {

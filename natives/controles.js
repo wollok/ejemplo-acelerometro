@@ -2,6 +2,7 @@ import { WebSocketServer } from "ws"
 
 const port = 8080
 let x = 0, y = 0, z = 0
+const events = []
 
 const sensor = {
   *listen(_self) {
@@ -18,7 +19,9 @@ const sensor = {
           z = acceleration.z
           // console.log(`Acceleration: x=${x} y=${y} z=${z}`)
         }
-        if (buttonPressed) console.log({ buttonPressed })
+        if (buttonPressed) {
+          events.push(buttonPressed)
+        }
       })
     })
 
@@ -34,6 +37,13 @@ const sensor = {
   },
   *z(_self) {
     return yield* this.reify(z)
+  },
+
+  *flushEvents(_self) {
+    for (const e of events)
+      yield* this.send('buttonPressed', _self, this.reify(e))
+
+    events.length = 0
   },
 }
 
