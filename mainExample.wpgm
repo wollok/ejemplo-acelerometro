@@ -1,20 +1,24 @@
 import wollok.game.*
+import controles.*
+
 import jugador.*
 import mapa.*
 import niveles.*
-import controler.*
+ import controler.*
+// import cartel.*
 
-program juego {
-
-// celular.simularTeclas()
+program tilt_maze {
 
   game.clear()
   game.title("El laberinto de la bolita")
   game.width(mapa.ancho())
   game.height(mapa.alto())
-
+  
+  celular.simularTeclas()
   mapa.iniciar(niveles.get(0))
   game.addVisual(bolita)
+
+// game.addVisual(cartelResultado)
   controles.activar()
 
   game.start()
