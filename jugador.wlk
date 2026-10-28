@@ -54,6 +54,18 @@ object bolita {
     game.addVisual(ganaste)
   }
 
+  method reiniciar() {
+    game.removeVisual(ganaste)
+    game.removeVisual(perdiste)
+
+    position = game.at(38, 1)
+    activa = true
+
+    if (not(game.hasVisual(self))) {
+      game.addVisual(self)
+    }
+  }
+
   method moverDerecha() {
     self.moverA(position.right(1))
   }

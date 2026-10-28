@@ -5,7 +5,6 @@ import jugador.*
 import mapa.*
 import niveles.*
  import controler.*
-// import cartel.*
 
 program tilt_maze {
 
@@ -18,7 +17,10 @@ program tilt_maze {
   mapa.iniciar(niveles.get(0))
   game.addVisual(bolita)
 
-// game.addVisual(cartelResultado)
+  keyboard.r().onPressDo({
+    bolita.reiniciar()
+  })
+
   controles.activar()
 
   game.start()
