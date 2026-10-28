@@ -19,8 +19,8 @@ const nivelFacil = [
   [m,v,v,v,v,v,v,v,v,v,v,h,v,v,v,v,m,v,v,v,v,v,v,v,v,v,m,v,v,v,m,h,v,v,m,v,v,v,v,m], //-
   [m,m,v,h,v,v,v,v,v,v,v,v,v,v,h,v,m,v,v,v,v,v,m,m,v,v,m,v,v,v,v,v,v,v,v,v,v,v,v,m], //-
   [m,v,v,v,m,v,v,m,v,v,v,v,v,v,v,v,m,v,h,v,v,h,m,v,v,v,v,v,v,v,v,v,m,v,v,v,v,m,m,m], //-
-  [m,s,s,v,m,v,v,m,v,h,v,v,m,v,v,v,v,v,v,v,v,v,m,v,v,v,v,v,v,h,v,v,m,v,v,v,v,v,v,m], //-
-  [m,s,s,v,m,v,v,v,v,v,v,v,m,m,v,v,v,v,v,v,v,v,m,v,h,v,v,v,v,v,v,v,m,v,v,m,v,v,h,m], //-
+  [m,v,s,v,m,v,v,m,v,h,v,v,m,v,v,v,v,v,v,v,v,v,m,v,v,v,v,v,v,h,v,v,m,v,v,v,v,v,v,m], //-
+  [m,v,v,v,m,v,v,v,v,v,v,v,m,m,v,v,v,v,v,v,v,v,m,v,h,v,v,v,v,v,v,v,m,v,v,m,v,v,h,m], //-
   [m,v,v,v,m,v,v,v,v,v,v,v,v,m,v,v,m,v,v,m,v,v,v,v,v,v,m,v,v,v,v,v,v,v,m,m,v,v,v,m], //-
   [m,v,v,v,m,h,v,v,v,m,m,v,v,m,v,v,m,v,v,m,v,v,v,v,v,v,m,v,v,m,m,v,v,v,v,v,v,v,v,m], //-
   [m,v,v,m,m,v,v,v,v,v,m,v,v,v,v,v,v,v,v,m,v,v,m,v,v,v,m,v,v,v,m,v,v,v,v,v,m,m,m,m], //-

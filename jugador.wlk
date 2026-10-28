@@ -1,7 +1,22 @@
 import wollok.game.*
 import mapa.*
 
+
+object ganaste {
+  var property position = game.at(1, 1)
+
+  method image() = "ganaste.png"
+}
+
+object perdiste {
+  var property position = game.at(1, 1)
+
+  method image() = "perdiste.png"
+}
+
+
 object bolita {
+
   var property position = game.at(38, 1)
   var property activa = true
 
@@ -26,13 +41,17 @@ object bolita {
   method caerEnHueco() {
     activa = false
     game.removeVisual(self)
-    // lógica que debe ocurrir después de caer en un hueco.
+
+    perdiste.position(game.at(1, 1))
+    game.addVisual(perdiste)
   }
 
   method llegarALaMeta() {
     activa = false
     game.removeVisual(self)
-    // la lógica que debe ocurrir después de llegar a la meta
+
+    ganaste.position(game.at(1, 1))
+    game.addVisual(ganaste)
   }
 
   method moverDerecha() {
