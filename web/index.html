@@ -26,6 +26,11 @@
       <div id="needle" class="needle"></div>
       <div class="center"></div>
     </div>
+
+    <div class="joystick-buttons" role="group" aria-label="Botones del joystick">
+      <button id="button-a" class="joystick-button" type="button" disabled>A</button>
+      <button id="button-b" class="joystick-button" type="button" disabled>B</button>
+    </div>
   </div>
 
   <script>
@@ -33,10 +38,15 @@
     const statusElement = document.getElementById("status");
     const startButton = document.getElementById("start");
     const needle = document.getElementById("needle");
+    const joystickButtons = [
+      { button: "A", element: document.getElementById("button-a") },
+      { button: "B", element: document.getElementById("button-b") },
+    ];
 
     const COMPASS_THRESHOLD = 0.5;
     let motionListener = null;
     let lastCompassAngle = 0;
+    let socket = null;
 
     function showStatus(message, isError = false) {
       statusElement.innerText = message;
@@ -62,6 +72,20 @@
       needle.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
     }
 
+    function setJoystickButtonsEnabled(enabled) {
+      joystickButtons.forEach(({ element }) => {
+        element.disabled = !enabled;
+      });
+    }
+
+    joystickButtons.forEach(({ button, element }) => {
+      element.addEventListener("click", () => {
+        if (socket?.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify({ buttonPressed: button }));
+        }
+      });
+    });
+
     function detachMotionListener() {
       if (motionListener) {
         window.removeEventListener("devicemotion", motionListener);
@@ -84,10 +108,11 @@
           }
         }
 
-        const socket = new WebSocket(WS);
+        socket = new WebSocket(WS);
 
         socket.addEventListener("open", () => {
           showStatus("Conectado correctamente");
+          setJoystickButtonsEnabled(true);
 
           detachMotionListener();
           motionListener = (e) => {
@@ -97,9 +122,10 @@
             const z = Number(acceleration.z) || 0;
 
             updateCompass(x, y);
+            const data = { acceleration: { x, y, z } }
 
             if (socket.readyState === WebSocket.OPEN) {
-              socket.send(JSON.stringify({ x, y, z }));
+              socket.send(JSON.stringify(data));
             }
           };
 
@@ -109,6 +135,7 @@
         socket.addEventListener("error", () => {
           showStatus(`Error al conectar con ${WS}. Revisá la IP o que el servidor esté levantado.`, true);
           detachMotionListener();
+          setJoystickButtonsEnabled(false);
           startButton.disabled = false;
         });
 
@@ -116,11 +143,13 @@
           const reason = event.reason ? ` Motivo: ${event.reason}` : "";
           showStatus(`Conexión cerrada${reason}.`, true);
           detachMotionListener();
+          setJoystickButtonsEnabled(false);
           startButton.disabled = false;
         });
       } catch (error) {
         showStatus(`Error: ${error.message || error}`, true);
         detachMotionListener();
+        setJoystickButtonsEnabled(false);
         startButton.disabled = false;
       }
     };

@@ -23,5 +23,8 @@ program tilt_maze {
 
   controles.activar()
 
-  game.start()
+	sensor.register('A', { game.say(jugador, "HOLA!") })
+	sensor.register('B', { game.say(jugador, "CHAU!") })
+
+	game.start()
 }

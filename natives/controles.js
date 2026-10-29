@@ -2,20 +2,26 @@ import { WebSocketServer } from "ws"
 
 const port = 8080
 let x = 0, y = 0, z = 0
+const events = []
 
 const sensor = {
   *listen(_self) {
     const wss = new WebSocketServer({ port })
-    
+
     wss.on("connection", (ws) => {
       console.log("✓ Celular conectado")
 
       ws.on("message", (msg) => {
-        const data = JSON.parse(msg.toString())
-        x = data.x
-        y = data.y
-        z = data.z
-        // console.log(`x=${x} y=${y} z=${z}`)
+        const { acceleration, buttonPressed } = JSON.parse(msg.toString())
+        if (acceleration) {
+          x = acceleration.x
+          y = acceleration.y
+          z = acceleration.z
+          // console.log(`Acceleration: x=${x} y=${y} z=${z}`)
+        }
+        if (buttonPressed) {
+          events.push(buttonPressed)
+        }
       })
     })
 
@@ -31,6 +37,13 @@ const sensor = {
   },
   *z(_self) {
     return yield* this.reify(z)
+  },
+
+  *flushEvents(_self) {
+    for (const e of events)
+      yield* this.send('buttonPressed', _self, this.reify(e))
+
+    events.length = 0
   },
 }
 
