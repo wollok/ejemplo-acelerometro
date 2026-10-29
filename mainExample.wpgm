@@ -1,14 +1,27 @@
-import jugador.*
-import controles.*
 import wollok.game.*
+import controles.*
 
-program PepitaGame {
-	game.title("Acelerometro")
-	game.height(10)
-	game.width(10)
+import jugador.*
+import mapa.*
+import niveles.*
+ import controler.*
 
-	celular.simularTeclas()
-	game.addVisualCharacter(jugador)
+program tilt_maze {
+
+  game.clear()
+  game.title("El laberinto de la bolita")
+  game.width(mapa.ancho())
+  game.height(mapa.alto())
+  
+  celular.simularTeclas()
+  mapa.iniciar(niveles.get(0))
+  game.addVisual(bolita)
+
+  keyboard.r().onPressDo({
+    bolita.reiniciar()
+  })
+
+  controles.activar()
 
 	sensor.register('A', { game.say(jugador, "HOLA!") })
 	sensor.register('B', { game.say(jugador, "CHAU!") })

@@ -1,0 +1,107 @@
+
+import wollok.game.*
+import jugador.*
+import mapa.*
+import niveles.*
+
+describe "Tests del laberinto" {
+
+  method initialize() {
+    game.clear()
+    game.width(40)
+    game.height(20)
+
+    mapa.iniciar(nivelFacil)
+
+    game.addVisual(bolita)
+  }
+
+  test "el nivel tiene 20 filas" {
+    assert.equals(20, nivelFacil.size())
+  }
+
+  test "cada fila tiene 40 casillas" {
+    nivelFacil.forEach({ fila =>
+      assert.equals(40, fila.size())
+    })
+  }
+
+  test "la bolita comienza en la posicion inicial" {
+    
+    assert.equals(game.at(38, 1), bolita.position())
+    assert.that(bolita.activa())
+  }
+
+  test "la bolita puede moverse a la derecha" {
+    bolita.position(game.at(37, 1))
+    bolita.moverDerecha()
+
+    assert.equals(game.at(38, 1), bolita.position())
+  }
+
+  test "la bolita puede moverse a la izquierda" {
+    bolita.moverIzquierda()
+ 
+    assert.equals(game.at(37, 1), bolita.position())
+  }
+
+  test "la bolita puede moverse hacia arriba" {
+    bolita.moverArriba()
+ 
+    assert.equals(game.at(38, 2), bolita.position())
+  }
+
+  test "la bolita puede moverse hacia abajo" {
+    bolita.position(game.at(38, 2))
+    bolita.moverAbajo()
+
+    assert.equals(game.at(38, 1), bolita.position())
+  }
+  
+
+
+  test "la bolita no puede atravesar una pared hacia abajo" {
+    bolita.moverAbajo()
+
+    assert.equals(game.at(38, 1), bolita.position())
+  }
+
+  test "la bolita no puede atravesar una pared hacia arriba" {
+    bolita.position(game.at(38, 6))
+    bolita.moverArriba()
+
+    assert.equals(game.at(38, 6), bolita.position())
+  }
+
+  test "la bolita no puede atravesar una pared hacia la derecha" {
+    bolita.moverDerecha()
+
+    assert.equals(game.at(38, 1), bolita.position())
+  }
+
+  test "la bolita no puede atravesar una pared hacia la izquierda" {
+    bolita.position(game.at(34, 1))
+    bolita.moverIzquierda()
+
+    assert.equals(game.at(34, 1), bolita.position())
+  }
+
+
+
+  test "la bolita desaparece al caer en un hueco" {
+    bolita.position(game.at(37, 3))
+
+    bolita.moverArriba()
+
+    assert.notThat(bolita.activa())
+  }
+
+  test "la bolita desaparece al llegar a la meta" {
+    bolita.position(game.at(2, 12))
+
+    bolita.moverArriba()
+
+    assert.notThat(bolita.activa())
+  }
+
+}
