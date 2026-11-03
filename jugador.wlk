@@ -33,6 +33,7 @@ object bolita {
   method resolverCasillaActual() {
     if (mapa.hayHuecoEn(position)) {
       self.caerEnHueco()
+      game.sound("caer.mp3").play()
     } else if (mapa.hayMetaEn(position)) {
       self.llegarALaMeta()
     }
@@ -44,6 +45,7 @@ object bolita {
 
     perdiste.position(game.at(1, 1))
     game.addVisual(perdiste)
+    game.sound("perdiste.mp3").play()
   }
 
   method llegarALaMeta() {
@@ -52,6 +54,7 @@ object bolita {
 
     ganaste.position(game.at(1, 1))
     game.addVisual(ganaste)
+    game.sound("ganaste.mp3").play()
   }
 
   method reiniciar() {
@@ -60,6 +63,7 @@ object bolita {
 
     position = game.at(38, 1)
     activa = true
+    game.sound("reiniciar.mp3").play()
 
     if (not(game.hasVisual(self))) {
       game.addVisual(self)
