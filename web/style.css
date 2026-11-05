@@ -95,7 +95,7 @@ button:disabled {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 34%;
+  width: 40%;
   aspect-ratio: 1;
   border: 3px solid #bfdbfe;
   border-radius: 50%;
@@ -241,7 +241,7 @@ button:disabled {
 }
 
 .panel.joystick-mode .joystick-pad {
-  width: min(180px, 42vw);
+  width: min(210px, 46vw);
   margin: 10px auto;
 }
 
@@ -264,7 +264,7 @@ button:disabled {
   }
 
   .panel.joystick-mode .joystick-pad {
-    width: min(220px, 38vw, 42vh);
+    width: min(250px, 42vw, 46vh);
   }
 
   .panel.joystick-mode .joystick-buttons {
