@@ -97,10 +97,34 @@ describe "Tests del laberinto" {
   }
 
   test "la bolita desaparece al llegar a la meta" {
-    bolita.position(game.at(2, 12))
+    bolita.position(game.at(2, 13))
 
     bolita.moverArriba()
 
+    assert.notThat(bolita.activa())
+  }
+
+  test "las cuatro baldosas de la meta activan la victoria" {
+    assert.notThat(mapa.hayMetaEn(game.at(2, 13)))
+    assert.notThat(mapa.hayMetaEn(game.at(3, 13)))
+
+    bolita.position(game.at(2, 13))
+    bolita.moverArriba()
+    assert.notThat(bolita.activa())
+
+    bolita.reiniciar()
+    bolita.position(game.at(3, 13))
+    bolita.moverArriba()
+    assert.notThat(bolita.activa())
+
+    bolita.reiniciar()
+    bolita.position(game.at(2, 14))
+    bolita.moverArriba()
+    assert.notThat(bolita.activa())
+
+    bolita.reiniciar()
+    bolita.position(game.at(3, 14))
+    bolita.moverArriba()
     assert.notThat(bolita.activa())
   }
 

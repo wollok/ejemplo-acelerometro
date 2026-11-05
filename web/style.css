@@ -1,11 +1,11 @@
 body {
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
   min-height: 100vh;
   margin: 0;
   padding: 24px 16px;
   background: #111827;
   color: white;
+  font-family: Arial, sans-serif;
 }
 
 *,
@@ -14,13 +14,18 @@ body {
   box-sizing: inherit;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .panel {
   width: min(100%, 420px);
   margin: 0 auto;
   text-align: center;
 }
 
-.controls {
+.controls,
+.mode-picker {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -28,12 +33,17 @@ body {
   margin-bottom: 20px;
 }
 
+.mode-picker h1 {
+  margin: 4px 0;
+  font-size: 20px;
+}
+
 input {
   width: 100%;
   min-width: 0;
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 10px;
   border: 1px solid #374151;
+  border-radius: 8px;
   font: inherit;
 }
 
@@ -46,6 +56,7 @@ button {
   color: white;
   font-weight: bold;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 button:disabled {
@@ -53,33 +64,89 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.change-mode {
+  margin: 0 0 16px;
+  background: #475569;
+}
+
+.mode-controls p {
+  margin: 20px 0 0;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.joystick-pad {
+  position: relative;
+  width: min(240px, 70vw);
+  aspect-ratio: 1;
+  margin: 22px auto 8px;
+  border: 3px solid #94a3b8;
+  border-radius: 50%;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), #475569 calc(50% - 1px), #475569 calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(transparent calc(50% - 1px), #475569 calc(50% - 1px), #475569 calc(50% + 1px), transparent calc(50% + 1px)),
+    radial-gradient(circle, #334155 0%, #1e293b 68%, #0f172a 100%);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(0, 0, 0, 0.25);
+  touch-action: none;
+  user-select: none;
+}
+
+.joystick-thumb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40%;
+  aspect-ratio: 1;
+  border: 3px solid #bfdbfe;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #60a5fa, #1d4ed8 75%);
+  box-shadow: 0 5px 0 #1e3a8a, 0 0 14px rgba(59, 130, 246, 0.45);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
 .joystick-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-top: 24px;
+  gap: 18px;
+  margin-top: 20px;
 }
 
 .joystick-button {
-  width: 68px;
-  min-height: 68px;
+  width: 64px;
+  min-height: 64px;
   padding: 0;
   border: 3px solid #bfdbfe;
   border-radius: 50%;
-  background: #dc2626;
-  box-shadow: 0 5px 0 #991b1b;
-  font-size: 24px;
-  touch-action: manipulation;
+  box-shadow: 0 5px 0 #1e3a8a;
+  font-size: 22px;
 }
 
-.joystick-button:last-child {
+.button-a {
+  background: #dc2626;
+  box-shadow: 0 5px 0 #991b1b;
+}
+
+.button-b {
   background: #2563eb;
-  box-shadow: 0 5px 0 #1e3a8a;
+}
+
+.button-c {
+  background: #16a34a;
+  box-shadow: 0 5px 0 #166534;
 }
 
 .joystick-button:active:not(:disabled) {
   transform: translateY(4px);
+  box-shadow: 0 1px 0 #1e3a8a;
+}
+
+.button-a:active:not(:disabled) {
   box-shadow: 0 1px 0 #991b1b;
+}
+
+.button-c:active:not(:disabled) {
+  box-shadow: 0 1px 0 #166534;
 }
 
 #status {
@@ -90,60 +157,121 @@ button:disabled {
 }
 
 .compass {
-  width: min(260px, 100%);
+  position: relative;
+  width: min(240px, 70vw);
   aspect-ratio: 1;
   margin: 0 auto;
+  border: 6px solid #cbd5e1;
   border-radius: 50%;
   background: radial-gradient(circle at center, #1f2937 0%, #0f172a 60%, #020817 100%);
-  border: 6px solid #cbd5e1;
-  position: relative;
   box-shadow: 0 0 24px rgba(59, 130, 246, 0.25);
 }
 
 .compass::before {
-  content: "";
   position: absolute;
   inset: 12px;
-  border-radius: 50%;
   border: 2px solid rgba(148, 163, 184, 0.5);
+  border-radius: 50%;
+  content: "";
 }
 
 .compass .needle {
   position: absolute;
+  top: 50%;
+  left: 50%;
   width: 8px;
   height: 45%;
-  left: 50%;
-  top: 50%;
-  transform-origin: center 90%;
-  transform: translate(-50%, -100%) rotate(0deg);
-  background: linear-gradient(180deg, #ef4444 0%, #f87171 40%, #fee2e2 100%);
-  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
   border-radius: 10px;
+  background: linear-gradient(180deg, #ef4444 0%, #f87171 40%, #fee2e2 100%);
   box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  transform: translate(-50%, -100%) rotate(0deg);
+  transform-origin: center 90%;
 }
 
 .compass .center {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
   width: 18px;
   height: 18px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  background: #f8fafc;
-  border-radius: 50%;
   border: 4px solid #0f172a;
-  z-index: 2;
+  border-radius: 50%;
+  background: #f8fafc;
+  transform: translate(-50%, -50%);
 }
 
 .direction {
   position: absolute;
-  font-weight: bold;
   color: #e2e8f0;
   font-size: 14px;
+  font-weight: bold;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .n { top: 12px; left: 50%; transform: translateX(-50%); }
 .s { bottom: 12px; left: 50%; transform: translateX(-50%); }
-.e { right: 12px; top: 50%; transform: translateY(-50%); }
-.w { left: 12px; top: 50%; transform: translateY(-50%); }
+.e { top: 50%; right: 12px; transform: translateY(-50%); }
+.w { top: 50%; left: 12px; transform: translateY(-50%); }
+
+.panel.joystick-mode {
+  display: grid;
+  width: min(100%, 560px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  column-gap: 12px;
+}
+
+.panel.joystick-mode .controls,
+.panel.joystick-mode #status,
+.panel.joystick-mode .mode-picker,
+.panel.joystick-mode .change-mode,
+.panel.joystick-mode .compass {
+  grid-column: 1 / -1;
+}
+
+.panel.joystick-mode .compass {
+  width: min(150px, 34vw);
+}
+
+.panel.joystick-mode .joystick-controls {
+  grid-column: 1;
+  margin: 0;
+}
+
+.panel.joystick-mode .joystick-pad {
+  width: min(210px, 46vw);
+  margin: 10px auto;
+}
+
+.panel.joystick-mode .joystick-buttons {
+  grid-column: 2;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 0;
+}
+
+@media (orientation: landscape) and (min-width: 600px) and (max-height: 700px) {
+  .panel.joystick-mode {
+    width: min(100%, 760px);
+    column-gap: clamp(12px, 4vw, 36px);
+  }
+
+  .panel.joystick-mode .compass {
+    width: min(180px, 42vh);
+  }
+
+  .panel.joystick-mode .joystick-pad {
+    width: min(250px, 42vw, 46vh);
+  }
+
+  .panel.joystick-mode .joystick-buttons {
+    align-self: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: clamp(8px, 2vw, 18px);
+    margin-top: 0;
+  }
+}

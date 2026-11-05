@@ -1,8 +1,8 @@
-## Ejemplo de Acelerómetro
+## Ejemplo de control con el celular
 
-Este repo es una prueba para usar el celular como joystick para Wollok Game.
-
-En esta primera prueba queremos controlar al jugador con el _acelerómetro_.
+Este repo permite controlar el juego Wollok desde el celular con un joystick virtual o con el sensor de movimiento.
+Los botones **A** y **B** conservan sus acciones, y **C** reinicia la partida.
+Después de conectar, elegí **Usar joystick** para mover la palanca analógica o **Usar sensor del celular** para controlar inclinando el celular. La brújula permanece visible y los botones están disponibles en ambos modos. En el modo joystick, la aguja sigue la dirección de la palanca y podés usarla a la vez que tocás los botones. En horizontal, el joystick queda a la izquierda y los botones a la derecha; en vertical, los controles se acomodan uno debajo del otro.
 
 ### Controlá al jugador usando tu celular ➡️ 📱
 
@@ -33,12 +33,13 @@ Asegurate de que el juego se vea en la pantalla.
 3. Desde el celu, entrá al sitio que levanteste antes (Network). 
 > Siguendo este ejemplo debería ser https://192.168.43.170:5173/
 
-Acá deberías ver el sitio web que tiene un campo de texto y un botón de "Conectar"
+Acá deberías ver el control del juego y un botón de "Conectar".
 
 ![web](web.png)
 
-4. Asegurate que diga la misma ip que la compu (Network) y apretá `Conectar`.
-> En este caso sería `192.168.43.170`
+4. En **IP de la laptop**, ingresá la IP que aparece en la línea `Network` de Vite (por ejemplo, `192.168.1.25`) y apretá `Conectar`.
 
-5. Ya podés controlar al personaje agitando tu celu 🫨
+5. Cuando aparezcan las opciones, elegí el joystick o el sensor. Ya podés controlar al personaje con tu celu 🫨
+
+Si cambiás de red, conectá la computadora y el celular a la misma Wi-Fi y usá la IP `Network` actual de Vite. La IP puede cambiar entre redes; no hace falta fijarla en el código.
 > Fijate que al conectarse la terminal del juego diga `✓ Celular conectado`
