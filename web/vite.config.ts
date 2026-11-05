@@ -6,5 +6,11 @@ export default defineConfig({
   server: {
     host: true,
     https: true,
+    proxy: {
+      "/socket": {
+        target: "ws://127.0.0.1:8080",
+        ws: true,
+      },
+    },
   },
 })
