@@ -20,7 +20,7 @@ object sensor {
 }
 
 object celular {
-  const sensibilidad = 2
+  const sensibilidad = 2.4
   
   method simularTeclas() {
     sensor.listen()
